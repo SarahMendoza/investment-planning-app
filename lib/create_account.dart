@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import 'survey.dart';
 
-class CreateAccount extends StatelessWidget {
+class CreateAccount extends StatefulWidget {
   const CreateAccount({Key? key}) : super(key: key);
 
+  @override
+  State<CreateAccount> createState() => _CreateAccountState();
+}
+
+class _CreateAccountState extends State<CreateAccount> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,7 +23,7 @@ class CreateAccount extends StatelessWidget {
             children: [
               const Text.rich(
                 TextSpan(
-                  text: "Our Platform Name",
+                  text: "Create Account",
                   style: TextStyle(
                     fontSize: 30,
                   ),
@@ -31,6 +37,24 @@ class CreateAccount extends StatelessWidget {
               // ),
               const TextField(
                 decoration: InputDecoration(
+                  labelText: 'First name',
+                ),
+              ),
+              const SizedBox(height: 8),
+              const TextField(
+                decoration: InputDecoration(
+                  labelText: 'Last name',
+                ),
+              ),
+              const SizedBox(height: 8),
+              const TextField(
+                decoration: InputDecoration(
+                  labelText: 'Email address',
+                ),
+              ),
+              const SizedBox(height: 8),
+              const TextField(
+                decoration: InputDecoration(
                   labelText: 'Username',
                 ),
               ),
@@ -41,29 +65,22 @@ class CreateAccount extends StatelessWidget {
                   labelText: 'Password',
                 ),
               ),
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  TextButton(
-                    onPressed: () {},
-                    child: const Text('Forgot Password'),
-                  ),
-                ],
+              const SizedBox(height: 16),
+              const TextField(
+                obscureText: true,
+                decoration: InputDecoration(
+                  labelText: 'Confirm password',
+                ),
               ),
               const SizedBox(height: 64),
               SizedBox(
                 width: 200,
                 child: OutlinedButton(
-                  onPressed: () {},
-                  child: const Text('Login'),
-                ),
-              ),
-              const SizedBox(height: 16),
-              SizedBox(
-                width: 200,
-                child: OutlinedButton(
-                  onPressed: () {},
-                  child: const Text('Create Account'),
+                  onPressed: () {
+                    Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => Survey()));
+                  },
+                  child: const Text('Continue'),
                 ),
               ),
               // Row(

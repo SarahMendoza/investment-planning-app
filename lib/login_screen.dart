@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'create_account.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
 
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,8 +52,7 @@ class LoginScreen extends StatelessWidget {
                 children: [
                   TextButton(
                     onPressed: () {
-                      Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => CreateAccount()));
+                    
                     },
                     child: const Text('Forgot Password'),
                   ),
@@ -66,7 +70,10 @@ class LoginScreen extends StatelessWidget {
               SizedBox(
                 width: 200,
                 child: OutlinedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => CreateAccount()));
+                  },
                   child: const Text('Create Account'),
                 ),
               ),

@@ -64,4 +64,28 @@ function openStockModal() {
         closeStockModal();
       }
     }
+
+    function loadFixedAssets() {
+      fetch('http://localhost:5000/api/fixed-assets') // Adjust to your real API
+        .then(res => res.json())
+        .then(data => {
+          const container = document.getElementById('fixedAssetsContainer');
+          container.innerHTML = ""; // Clear old entries
+    
+          data.forEach(asset => {
+            const row = document.createElement('div');
+            row.className = "labeled-row";
+            row.innerHTML = `
+              <span>${asset.label}</span>
+              <strong>${asset.value}</strong>
+            `;
+            container.appendChild(row);
+            container.appendChild(document.createElement('hr'));
+          });
+        })
+        .catch(err => {
+          console.error("Failed to load fixed assets:", err);
+        });
+    }
+    
 }

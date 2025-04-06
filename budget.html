@@ -344,13 +344,11 @@ input:focus {
       <label for="goalPrice">Goal Price ($):</label><br/>
       <input type="number" id="goalPrice" name="goalPrice" required><br/><br/>
 
-      <div class="add-button-wrapper">
-        <button class="add-button" onclick="openGoalModal()">+ Add Goal</button>
-
-      </div>
+      <button type="submit" class="add-button">Add Goal</button>
     </form>
   </div>
 </div>
+
 
 
 
@@ -423,7 +421,8 @@ input:focus {
     closeExpenseModal();
   });
 
-  const goalModal = document.getElementById('addGoalModal');
+const goalModal = document.getElementById('addGoalModal');
+
 const goalForm = document.getElementById('goalForm');
 
 function openGoalModal() {

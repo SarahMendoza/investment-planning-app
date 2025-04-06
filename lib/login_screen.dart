@@ -1,6 +1,50 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:web_socket_channel/io.dart';
+
 import 'create_account.dart';
 import 'dashboard.dart';
+
+
+import 'package:http/http.dart' as http;
+
+void login(String username, String password, BuildContext context) async {
+  final response = await http.post(
+    Uri.parse('http://127.0.0.1:5000/user/login'), // Use your backend IP if on device
+    headers: {"Content-Type": "application/json"},
+    body: json.encode({
+      "username": username,
+      "password": password,
+    }),
+  );
+
+  if (response.statusCode == 200) {
+    final data = json.decode(response.body);
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('user_name', data['user_name']);
+    Navigator.push(context, MaterialPageRoute(builder: (_) => Dashboard()));
+  } else {
+    final message = json.decode(response.body)['message'];
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text("Login Failed"),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text("OK"),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+
+
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -12,6 +56,9 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
+    String _user = "";
+    String _pwd = "";
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(''),
@@ -36,14 +83,16 @@ class _LoginScreenState extends State<LoginScreen> {
               //     title: Text("Our Platform Name"),
               //   )
               // ),
-              const TextField(
+              TextField(
+                onChanged: (val) => _user = val,
                 decoration: InputDecoration(
                   labelText: 'Username',
                 ),
               ),
               const SizedBox(height: 16),
-              const TextField(
+              TextField(
                 obscureText: true,
+                onChanged: (val) => _pwd = val,
                 decoration: InputDecoration(
                   labelText: 'Password',
                 ),
@@ -64,8 +113,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 width: 200,
                 child: OutlinedButton(
                   onPressed: () {
-                    Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => Dashboard()));
+                    // Navigator.push(context,
+                    // MaterialPageRoute(builder: (context) => Dashboard()));
+                    login(_user, _pwd, context);
                   },
                   child: const Text('Login'),
                 ),

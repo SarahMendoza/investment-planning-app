@@ -1,12 +1,56 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class Dashboard extends StatelessWidget {
+import 'login_screen.dart';
+
+// username() async {
+//   SharedPreferences prefs = await SharedPreferences.getInstance();
+//   String mail = prefs.getString('mail') ?? "";
+
+//   return Text("Mail is: $mail");
+// }
+
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
+Future<List<Map<String, dynamic>>> fetchGoals(String userId) async {
+  final response = await http.get(Uri.parse('http://localhost:5000/goals/$userId'));
+
+  if (response.statusCode == 200) {
+    final List data = json.decode(response.body);
+    return data.map((goal) => goal as Map<String, dynamic>).toList();
+  } else {
+    throw Exception('Failed to load goals');
+  }
+}
+
+
+class Dashboard extends StatefulWidget {
   const Dashboard({Key? key}) : super(key: key);
 
   @override
+  State<Dashboard> createState() => _DashboardState();
+}
+
+class _DashboardState extends State<Dashboard> {
+  @override
   Widget build(BuildContext context) {
+
+    List<Map<String, dynamic>> _goals = [];
+
+    @override
+    void initState() {
+      super.initState();
+      fetchGoals('user123').then((data) {
+        setState(() {
+          _goals = data;
+        });
+      });
+    }
+
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(''),

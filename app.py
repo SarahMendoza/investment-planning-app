@@ -185,7 +185,7 @@ def add_goal():
     goal_current_amount = data.get('goal_current_amount', 0)
     weekly_contributions = data.get('weekly_contributions', 0)
     # Check if the goal already exists
-    existing_goal = user_db_module.get_goal_by_name(user_helper.db, user_name, goal_name)
+    existing_goal = user_db_module.get_goal(user_helper.db, user_name, goal_name)
     if existing_goal:
         return jsonify({"error": "Goal already exists"}), 409
     # Create the goal
@@ -214,8 +214,8 @@ def get_goals():
 
     goals = user_db_module.get_goals(user_helper.db, data['user_name'])
     
-    if not goals:
-        return jsonify({"error": "No goals found"}), 404
+    # if not goals:
+    #     return jsonify({"error": "No goals found"}), 20
 
     return jsonify(goals), 200
 

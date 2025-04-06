@@ -151,6 +151,54 @@
   text-align: center;
 }
 
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 100;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.6); /* dim background */
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background-color: #1f1f1f;
+  color: #e0e0e0;
+  padding: 1.5rem;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 0 10px rgba(0,153,255,0.3);
+}
+
+.close-btn {
+  float: right;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #0099ff;
+}
+
+input {
+  width: 100%;
+  padding: 0.6rem;
+  margin-top: 0.25rem;
+  background-color: #2a2a2a;
+  color: #ffffff;
+  border: 1px solid #444;
+  border-radius: 4px;
+}
+
+input:focus {
+  outline: none;
+  border-color: #0099ff;
+  box-shadow: 0 0 4px #0099ff;
+}
+
+
   </style>
 </head>
 <body>
@@ -164,9 +212,10 @@
       <div class="labeled-row"><span>Total</span><span>$5,100</span></div>
     </div>
     <div class="add-button-wrapper">
-      <button class="add-button" onclick="alert('Add Income')">+ Add Income</button>
-      
+      <button class="add-button" onclick="openIncomeModal()">+ Add Income</button>
     </div>
+    
+    
     
 
     <h2>Expenses</h2>
@@ -180,7 +229,8 @@
     </div>
     <div class="add-button-wrapper">
       
-      <button class="add-button" onclick="alert('Add Expense')">+ Add Expense</button>
+      <button class="add-button" onclick="openExpenseModal()">+ Add Expense</button>
+
     </div>
     
 
@@ -243,5 +293,171 @@
     <button onclick="window.location.href='chat.html'">Chat</button>
   </div>
 
+  <div id="addIncomeModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeIncomeModal()">&times;</span>
+      <h2>Add Income</h2>
+      <form id="incomeForm">
+        <label for="source">Source:</label><br/>
+        <input type="text" id="source" name="source" required><br/><br/>
+  
+        <label for="amount">Amount:</label><br/>
+        <input type="number" id="amount" name="amount" required><br/><br/>
+  
+        <button type="submit" class="add-button">Add</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add Expense Modal -->
+<div id="addExpenseModal" class="modal">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeExpenseModal()">&times;</span>
+    <h2>Add Expense</h2>
+    <form id="expenseForm">
+      <label for="expenseName">Expense Name:</label><br/>
+      <input type="text" id="expenseName" name="expenseName" required><br/><br/>
+
+      <label for="category">Category:</label><br/>
+      <input type="text" id="category" name="category" required><br/><br/>
+
+      <label for="amount">Amount ($):</label><br/>
+      <input type="number" id="expenseAmount" name="amount" required><br/><br/>
+
+      <label for="date">Date:</label><br/>
+      <input type="date" id="date" name="date" required><br/><br/>
+
+      <button type="submit" class="add-button">Add Expense</button>
+    </form>
+  </div>
+</div>
+
+<!-- Add Goal Modal -->
+<div id="addGoalModal" class="modal">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeGoalModal()">&times;</span>
+    <h2>Add Goal</h2>
+    <form id="goalForm">
+      <label for="goalName">Goal Name:</label><br/>
+      <input type="text" id="goalName" name="goalName" required><br/><br/>
+
+      <label for="goalPrice">Goal Price ($):</label><br/>
+      <input type="number" id="goalPrice" name="goalPrice" required><br/><br/>
+
+      <div class="add-button-wrapper">
+        <button class="add-button" onclick="openGoalModal()">+ Add Goal</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+
+
+
 </body>
+
+<script>
+  const incomeModal = document.getElementById('addIncomeModal');
+  const incomeForm = document.getElementById('incomeForm');
+
+  function openIncomeModal() {
+    incomeModal.style.display = 'flex';
+  }
+
+  function closeIncomeModal() {
+    incomeModal.style.display = 'none';
+  }
+
+  window.addEventListener('click', (e) => {
+    if (e.target === incomeModal) {
+      closeIncomeModal();
+    }
+  });
+
+  incomeForm.addEventListener('submit', function(event) {
+    event.preventDefault();
+    const source = document.getElementById('source').value;
+    const amount = document.getElementById('amount').value;
+
+    console.log("New income added:", { source, amount });
+
+    incomeForm.reset();
+    closeIncomeModal();
+  });
+</script>
+<script>
+  const expenseModal = document.getElementById('addExpenseModal');
+  const expenseForm = document.getElementById('expenseForm');
+
+  function openExpenseModal() {
+    expenseModal.style.display = 'flex';
+  }
+
+  function closeExpenseModal() {
+    expenseModal.style.display = 'none';
+  }
+
+  window.addEventListener('click', (e) => {
+    if (e.target === expenseModal) {
+      closeExpenseModal();
+    }
+  });
+
+  expenseForm.addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const expense = {
+      name: document.getElementById('expenseName').value,
+      category: document.getElementById('category').value,
+      amount: document.getElementById('expenseAmount').value,
+      date: document.getElementById('date').value,
+    };
+
+    console.log("New expense added:", expense);
+
+    // TODO: Add logic to save to the DOM or backend
+
+    expenseForm.reset();
+    closeExpenseModal();
+  });
+
+  const goalModal = document.getElementById('addGoalModal');
+const goalForm = document.getElementById('goalForm');
+
+function openGoalModal() {
+  goalModal.style.display = 'flex';
+}
+
+function closeGoalModal() {
+  goalModal.style.display = 'none';
+}
+
+window.addEventListener('click', (e) => {
+  if (e.target === goalModal) {
+    closeGoalModal();
+  }
+});
+
+goalForm.addEventListener('submit', function(event) {
+  event.preventDefault();
+
+  const goal = {
+    name: document.getElementById('goalName').value,
+    price: document.getElementById('goalPrice').value
+  };
+
+  console.log("New goal added:", goal);
+
+  // TODO: append to DOM or send to backend
+
+  goalForm.reset();
+  closeGoalModal();
+});
+
+</script>
+
+
+
+
 </html>

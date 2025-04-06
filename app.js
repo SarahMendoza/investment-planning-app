@@ -23,3 +23,7 @@ function login() {
 function goToCreateAccount() {
   window.location.href = 'create_account.html';
 }
+
+function goToDashboard() {
+  window.location.href = 'dashboard.html';
+}

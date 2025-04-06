@@ -5,7 +5,7 @@ import yfinance as yf
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 import json
-import user_helper
+import user_helper, user_db_module
 
 app = Flask(__name__)
 CORS(app)
@@ -131,6 +131,47 @@ def get_user_info(user_name):
         "email": user["email"],
         "monthly_income": user["monthly_income"]
     }), 200
+
+
+
+
+
+
+#############################################
+# APIs for all expense items                #
+#############################################
+
+#add expense by user name
+@app.route('/expense/add', methods=['POST'])
+def add_expense():
+    data = request.get_json()
+    print("Received request to add expense:", data)
+
+    # query the database to check if the username exists
+    user = user_helper.get_user_by_username(user_helper.db, data['user_name'])
+    
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    user_db_module.create_expected_expenses(db,
+        user_name = data['user_name'],
+        expense_label = data['expense_label'],
+        expense_amount = data['expense_amount'],
+        recurring= data['recurring'] )
+
+    return jsonify({"message": "Expense added successfully!"}), 201
+
+#############################################
+# APIs for budget -- expenses               #
+#############################################
+
+
+
+#############################################
+# APIs for portfolios                       #
+#############################################
+
+
 
 
 

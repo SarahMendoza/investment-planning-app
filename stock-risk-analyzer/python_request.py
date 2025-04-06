@@ -1,6 +1,6 @@
 import requests
 
-API_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDM5NDA0NjUsImlhdCI6MTc0MzkzNjg2NSwic3ViIjoidXNlcl9pZCJ9.1nPu1rWrV2UzatwRYSOXxfW3NONrpJIASc6GOjJXLEk'
+API_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDQxMzA4NTksImlhdCI6MTc0Mzk1MDg1OSwic3ViIjoidXNlcl9pZCJ9.Ve3jvc2cz4poUXRTI8lmpP86y9lGNtke2TbV9hjS_js'
 BASE_URL = 'http://localhost:5000/api/v1'
 
 headers = {

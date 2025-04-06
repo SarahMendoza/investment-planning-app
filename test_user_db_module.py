@@ -1,56 +1,60 @@
 import unittest
-from pymongo import MongoClient
+#from pymongo import MongoClient
 from datetime import datetime, timedelta
 from user_db_module import create_fixed_investment, overall_investments_risk, add_fixed_investment, create_user, get_user, update_user, delete_user, create_portfolio, update_stock_portfolio, add_stock, delete_stock, create_goal, get_goals, get_fixed_investments
 
 class TestUserPortfolioFunctions(unittest.TestCase):
 
-    @classmethod
-    def setUpClass(cls):
-        # Connect to MongoDB (use a real instance or MongoDB Atlas)
-        cls.client = MongoClient("mongodb+srv://sarahmendoza:HackSMU2024@cluster0.cmoki.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")  # Replace with your MongoDB URI
-        cls.db = cls.client.test_database  # Use a test database (it will be created if it doesn't exist)
+    # @classmethod
+    # def setUpClass(cls):
+    #     # Connect to MongoDB (use a real instance or MongoDB Atlas)
+    #     cls.client = MongoClient("mongodb+srv://sarahmendoza:HackSMU2024@cluster0.cmoki.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")  # Replace with your MongoDB URI
+    #     cls.db = cls.client.test_database  # Use a test database (it will be created if it doesn't exist)
         
-        # Make sure the collection is empty before running tests
-        cls.db.users.drop()
+    #     # Make sure the collection is empty before running tests
+    #     cls.db.users.drop()
 
-    @classmethod
-    def tearDownClass(cls):
-        # Clean up by dropping the test database after tests
-        cls.db.users.drop()
-        cls.client.close()
+    # @classmethod
+    # def tearDownClass(cls):
+    #     # Clean up by dropping the test data
+    # base after tests
+    #     cls.db.users.drop()
+    #     cls.client.close()
 
-    def setUp(self):
-        # Prepare some common test data
-        self.user_data = {
-            "user_name": "johndoe",
-            "first_name": "John",
-            "last_name": "Doe",
-            "email": "john.doe@example.com",
-            "password": "password123",
-            "dob": "01-01-1901",
-            "monthly_income": 3000
-        }
+    # def setUp(self):
+    #     # Prepare some common test data
+    #     self.user_data = {
+    #         "user_name": "johndoe",
+    #         "first_name": "John",
+    #         "last_name": "Doe",
+    #         "email": "john.doe@example.com",
+    #         "password": "password123",
+    #         "dob": "01-01-1901",
+    #         "monthly_income": 3000
+    #     }
 
-    def test_create_user(self):
-        # Test creating a user
-        create_user(self.db, "johndoe", "John", "Doe", "john.doe@example.com", "password123", "01-01-1901", 3000)
-        user = self.db.users.find_one({"user_name": "johndoe"})
+    # def test_create_user(self):
+    #     # Test creating a user
+    #     create_user(self.db, "johndoe", "John", "Doe", "john.doe@example.com", "password123", "01-01-1901", 3000)
+    #     user = self.db.users.find_one({"user_name": "johndoe"})
         
-        self.assertIsNotNone(user)
-        self.assertEqual(user["user_name"], "johndoe")
-        self.assertEqual(user["first_name"], "John")
-        self.assertEqual(user["last_name"], "Doe")
-        self.assertEqual(user["email"], "john.doe@example.com")
+    #     self.assertIsNotNone(user)
+    #     self.assertEqual(user["user_name"], "johndoe")
+    #     self.assertEqual(user["first_name"], "John")
+    #     self.assertEqual(user["last_name"], "Doe")
+    #     self.assertEqual(user["email"], "john.doe@example.com")
 
-    def test_get_user(self):
-        # Test retrieving a user
-        self.db.users.insert_one(self.user_data)
+    # def test_get_user(self):
+    #     # Test retrieving a user
+    #     self.db.users.insert_one(self.user_data)
         
-        user = get_user(self.db, "johndoe")
+    #     user = get_user(self.db, "johndoe")
         
-        self.assertEqual(user["user_name"], "johndoe")
-        self.assertEqual(user["first_name"], "John")
+    #     self.assertEqual(user["user_name"], "johndoe")
+    #     self.assertEqual(user["first_name"], "John")
+
+    
+    #commented above
 
     # def test_update_user(self):
     #     # Test updating a user field

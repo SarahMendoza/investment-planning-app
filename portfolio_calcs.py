@@ -17,7 +17,7 @@ def calculate_portfolio_performance(tickers, weights):
     """
     
     # Download historical adjusted close prices for the given tickers
-    data = yf.download(tickers)['Adj Close']  # Yahoo Finance will automatically select the time range
+    data = yf.download(tickers)['Close']  # Yahoo Finance will automatically select the time range
     
     # Calculate daily returns
     returns = data.pct_change().dropna()
@@ -42,10 +42,10 @@ def calculate_portfolio_performance(tickers, weights):
     
     return portfolio_return, portfolio_risk
 
-# Example usage
-tickers = ['AAPL', 'GOOGL', 'MSFT']  # List of stock tickers
-weights = [0.4, 0.4, 0.2]  # Portfolio weights for AAPL, GOOGL, MSFT
+# # Example usage
+# tickers = ['AAPL', 'GOOGL', 'MSFT']  # List of stock tickers
+# weights = [0.4, 0.4, 0.2]  # Portfolio weights for AAPL, GOOGL, MSFT
 
-portfolio_return, portfolio_risk = calculate_portfolio_performance(tickers, weights)
-print(f"Portfolio Expected Return: {portfolio_return:.4f}")
-print(f"Portfolio Risk (Volatility): {portfolio_risk:.4f}")
+# portfolio_return, portfolio_risk = calculate_portfolio_performance(tickers, weights)
+# print(f"Portfolio Expected Return: {portfolio_return:.4f}")
+# print(f"Portfolio Risk (Volatility): {portfolio_risk:.4f}")

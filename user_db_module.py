@@ -12,7 +12,7 @@ import os
 os.environ['MONGODB_PASS'] = 'pass'
 
 if "MONGODB_PASS" in os.environ:
-    uri = "insert URI here".format(os.environ["MONGODB_PASS"])
+    uri = "mongodb+srv://sarahmendoza:HackSMU2024@cluster0.cmoki.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0".format(os.environ["MONGODB_PASS"])
 else:
     raise "MONGODB_PASS not in environment"
 
@@ -55,7 +55,7 @@ headers = {
 
 def calculate_age(dob_string):
     # Convert the string into a datetime object
-    dob = datetime.strptime(dob_string, "%d-%m-%Y")
+    dob = datetime.strptime(dob_string, "%m-%d-%Y")
 
     # Get the current date
     today = datetime.today()
@@ -125,53 +125,33 @@ def delete_user(db, user_name):
 def create_portfolio(db, user_name, time_horizon, investment_amount, investment_split = [], stocks=[]):
     user = db.users.find_one({"user_name": user_name})
     if user:
-        # Check if the user already has a portfolio
+        # Only update if portfolio exists, otherwise create one
         if "portfolio" in user:
-            # If portfolio exists, we update it rather than adding a new one
             print("User already has a portfolio. Updating the existing portfolio.")
-            # Calculate risk and return rate if stocks are provided
-            if len(stocks) > 0:
-                risk, return_rate = pc.calculate_portfolio_performance(stocks, investment_split)
-            else:
-                risk = 0
-                return_rate = 0
-
-            # Update the portfolio
-            updated_portfolio = {
-                "stocks": stocks,
-                "risk": risk,
-                "return_rate": return_rate,
-                "time_horizon": time_horizon,
-                "investment_amount": investment_amount,
-                "investment_split": investment_split
-            }
-            db.users.update_one({"user_name": user_name}, {"$set": {"portfolio": updated_portfolio}})
-            print("Portfolio updated successfully.")
         else:
-            # If no portfolio exists, create a new one
             print("Creating new portfolio for the user.")
-            # Calculate risk and return rate if stocks are provided
-            if len(stocks) > 0:
-                risk, return_rate = pc.calculate_portfolio_performance(stocks, investment_split)
-            else:
-                risk = 0
-                return_rate = 0
+        
+        # Calculate risk and return rate if stocks are provided
+        risk, return_rate = pc.calculate_portfolio_performance(stocks, investment_split) if stocks else (0, 0)
 
-            # Create the new portfolio
-            new_portfolio = {
-                "stocks": stocks,
-                "risk": risk,
-                "return_rate": return_rate,
-                "time_horizon": time_horizon,
-                "investment_amount": investment_amount,
-                "investment_split": investment_split
-            }
+        updated_portfolio = {
+            "stocks": stocks,
+            "risk": risk,
+            "return_rate": return_rate,
+            "time_horizon": time_horizon,
+            "investment_amount": investment_amount,
+            "investment_split": investment_split
+        }
 
-            # Set the portfolio field with the new portfolio data
-            db.users.update_one({"user_name": user_name}, {"$set": {"portfolio": new_portfolio}})
-            print("Portfolio created successfully.")
+        # Update the portfolio (or create a new one if it doesn't exist)
+        db.users.update_one(
+            {"user_name": user_name},
+            {"$set": {"portfolio": updated_portfolio}}
+        )
+        print("Portfolio updated/created successfully.")
     else:
         print("User not found.")
+
 
 def update_stock_portfolio(db, user_name, field_to_update, new_value):
     user = db.users.find_one({"user_name": user_name})
@@ -491,6 +471,7 @@ def get_stock_portfolio(db, user_name):
     else:
         print("User not found.")
         return None
+
 
 # def overall_investments_risk(db, user_name):
 #     """

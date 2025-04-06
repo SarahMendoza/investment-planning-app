@@ -1,7 +1,7 @@
-
 body {
   font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
+  background-color: #171717;
+  color: #e0e0e0;
   margin: 0;
   padding: 0;
   display: flex;
@@ -14,9 +14,9 @@ body {
   width: 100%;
   max-width: 800px;
   padding: 2rem;
-  background-color: white;
+  background-color: #1f1f1f;
   margin: 2rem auto;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  box-shadow: 0 0 15px rgba(0, 191, 255, 0.2); /* electric blue glow */
   border-radius: 8px;
 }
 
@@ -24,15 +24,18 @@ h1 {
   font-size: 30px;
   margin-bottom: 2rem;
   text-align: center;
+  color: #ffffff;
 }
 
 h2 {
   font-size: 24px;
   margin-bottom: 1rem;
+  color: #ffffff;
 }
 
 h3 {
   margin: 0 0 0.5rem 0;
+  color: #ffffff;
 }
 
 .form-group {
@@ -43,12 +46,23 @@ label {
   display: block;
   margin-bottom: 0.5rem;
   font-weight: bold;
+  color: #cccccc;
 }
 
 input {
   width: 100%;
   padding: 0.5rem;
   box-sizing: border-box;
+  background-color: #2a2a2a;
+  border: 1px solid #333;
+  color: #ffffff;
+  border-radius: 4px;
+}
+
+input:focus {
+  outline: none;
+  border-color: #00bfff;
+  box-shadow: 0 0 4px #00bfff;
 }
 
 .form-links {
@@ -59,9 +73,14 @@ input {
 .form-links button {
   background: none;
   border: none;
-  color: #007bff;
+  color: #00bfff;
   cursor: pointer;
   padding: 0;
+  font-weight: bold;
+}
+
+.form-links button:hover {
+  text-decoration: underline;
 }
 
 .form-actions {
@@ -73,23 +92,24 @@ input {
 
 button {
   padding: 0.6rem 1.2rem;
-  border: 1px solid #007bff;
-  background-color: #fff;
-  color: #007bff;
+  border: 1px solid #00bfff;
+  background-color: transparent;
+  color: #00bfff;
   cursor: pointer;
   border-radius: 4px;
   font-weight: bold;
+  transition: 0.2s;
 }
 
 button:hover {
-  background-color: #007bff;
-  color: #fff;
+  background-color: #00bfff;
+  color: #171717;
 }
 
 .card {
   padding: 1rem;
-  background-color: #fff;
-  border: 1px solid #e0e0e0;
+  background-color: #1f1f1f;
+  border: 1px solid #333;
   border-radius: 8px;
   margin: 1rem 0;
 }
@@ -97,4 +117,5 @@ button:hover {
 .labeled-row {
   display: flex;
   justify-content: space-between;
+  color: #cccccc;
 }

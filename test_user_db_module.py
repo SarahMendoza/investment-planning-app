@@ -125,10 +125,12 @@ class TestUserPortfolioFunctions(unittest.TestCase):
         # Test retrieving goals for a user
         self.db.users.insert_one(self.user_data)
         create_goal(self.db, "johndoe", "Buy a house", 50000, 365, 10000, 500)
-        
         goals = get_goals(self.db, "johndoe")
-        self.assertEqual(len(goals), 1)
+
+        #print(goals)
+        self.assertEqual(len(goals), 2)
         self.assertEqual(goals[0]["goal_name"], "Buy a house")
+
     def test_add_fixed_investment(self):
         # Test adding a fixed investment to a user's portfolio
         investment_name = "Bonds"

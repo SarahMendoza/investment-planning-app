@@ -15,5 +15,5 @@ def load_model(filename='risk_model.pkl'):
     """
     Load a trained model from the models directory.
     """
-    filepath = os.path.join('models', filename)
+    filepath = os.path.join('stock-risk-analyzer/models', filename)
     return joblib.load(filepath)

@@ -1,6 +1,6 @@
 import requests
 
-API_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDM4OTY0NDcsImlhdCI6MTc0Mzg5Mjg0Nywic3ViIjoidXNlcl9pZCJ9.CMmJZHb1qqTZxN5yYOiAG9IkYG9rs92Q4J40vNh2PA8'
+API_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDM5NDA0NjUsImlhdCI6MTc0MzkzNjg2NSwic3ViIjoidXNlcl9pZCJ9.1nPu1rWrV2UzatwRYSOXxfW3NONrpJIASc6GOjJXLEk'
 BASE_URL = 'http://localhost:5000/api/v1'
 
 headers = {
@@ -15,9 +15,9 @@ response = requests.get(
 print(response.json())
 
 # Batch analysis
-response = requests.post(
-    f'{BASE_URL}/analyze/batch',
-    headers=headers,
-    json={'tickers': ['AAPL', 'GOOGL', 'MSFT']}
-)
-print(response.json())
+# response = requests.post(
+#     f'{BASE_URL}/analyze/batch',
+#     headers=headers,
+#     json={'tickers': ['AAPL', 'GOOGL', 'MSFT']}
+# )
+# print(response.json())

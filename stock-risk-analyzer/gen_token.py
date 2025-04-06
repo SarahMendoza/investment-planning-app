@@ -8,7 +8,7 @@ app.config['SECRET_KEY'] = 'PLZ'  # Replace with your secret key
 # Function to generate JWT token
 def generate_token():
     payload = {
-        'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=1),  # Expiration time (1 hour)
+        'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=50),  # Expiration time (1 hour)
         'iat': datetime.datetime.utcnow(),  # Issued at time
         'sub': 'user_id'  # Subject (this could be the user ID or username)
     }

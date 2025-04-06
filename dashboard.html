@@ -1,0 +1,68 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <div class="container" style="width: 90%; max-width: 1200px;">
+    <h1>Dashboard</h1>
+    <div style="display: flex; gap: 2rem;">
+      <div style="flex: 1; max-width: 400px;">
+        <h2>Goals</h2>
+        <div id="goalsList"></div>
+      </div>
+      <div style="flex: 2;">
+        <div class="card">
+          <h3>Portfolio</h3><hr/>
+          <p>Thing 1</p><hr/>
+          <p>Thing 2</p><hr/>
+          <p>Thing 3</p>
+        </div>
+        <div class="card">
+          <h3>Fixed Assets</h3><hr/>
+          <div class="labeled-row"><span>Property</span><strong>$500,000</strong></div><hr/>
+          <div class="labeled-row"><span>Property</span><strong>$500,000</strong></div><hr/>
+          <div class="labeled-row"><span>Property</span><strong>$500,000</strong></div>
+        </div>
+        <div class="card">
+          <h3>Cash Investment</h3><hr/>
+          <div class="labeled-row"><span>Thing 1</span><strong>$15,000</strong></div><hr/>
+          <div class="labeled-row"><span>Thing 2</span><strong>$15,000</strong></div><hr/>
+          <div class="labeled-row"><span>Thing 3</span><strong>$15,500</strong></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      fetch("http://localhost:5000/goals/user123")
+        .then(res => res.json())
+        .then(data => {
+          const goalsList = document.getElementById("goalsList");
+          data.forEach(goal => {
+            const card = document.createElement("div");
+            card.className = "card";
+            card.innerHTML = 
+              <div style="display: flex; align-items: center;">
+                <div style="width: 60px; height: 60px; position: relative;">
+                  <progress value="70" max="100" style="width: 100%;"></progress>
+                  <div style="font-size: 10px; text-align: center;">70%</div>
+                </div>
+                <div style="margin-left: 1rem;">
+                  <strong>\${goal.title || 'Goal'}</strong><br/>
+                  <small style="color: grey;">\${goal.description || 'Description of goal'}</small>
+                </div>
+              </div>
+            ;
+            goalsList.appendChild(card);
+          });
+        });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Account</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Create Account</h1>
+    <div class="form-group"><label>First Name</label><input type="text" id="firstName"></div>
+    <div class="form-group"><label>Last Name</label><input type="text" id="lastName"></div>
+    <div class="form-group"><label>Birthdate (mm-dd-yyyy)</label><input type="text" id="birthDate"></div>
+    <div class="form-group"><label>Email Address</label><input type="email" id="email"></div>
+    <div class="form-group"><label>Username</label><input type="text" id="username"></div>
+    <div class="form-group"><label>Password</label><input type="password" id="password"></div>
+    <div class="form-group"><label>Confirm Password</label><input type="password" id="confirmPassword"></div>
+    <div class="form-actions" style="justify-content: center;">
+      <button onclick="submitCreateAccount()">Continue</button>
+    </div>
+  </div>
+  <script>
+    function submitCreateAccount() {
+      const email = document.getElementById('email').value;
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+
+      if (password !== confirmPassword) {
+        alert("Passwords do not match.");
+        return;
+      }
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        alert("Invalid email address.");
+        return;
+      }
+
+      const data = {
+        auth: "chatappauthkey231r4",
+        cmd: "signup",
+        email,
+        username,
+        hash: password
+      };
+
+      const socket = new WebSocket("ws://127.0.0.1:5000");
+
+      socket.onopen = () => {
+        socket.send(JSON.stringify(data));
+      };
+
+      socket.onmessage = (event) => {
+        const res = JSON.parse(event.data);
+        if (res.status === "succes") {
+          alert("Signup successful! Redirecting to login.");
+          window.location.href = "index.html";
+        } else {
+          alert("Signup failed. Please try again.");
+        }
+        socket.close();
+      };
+
+      socket.onerror = (err) => {
+        console.error("WebSocket error", err);
+        alert("Error connecting to server.");
+      };
+    }
+  </script>
+</body>
+</html>

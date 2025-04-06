@@ -190,7 +190,7 @@ def get_gemini_portfolio():
         return jsonify({"error": "User not found"}), 404
 
     # Check if the user has a previous conversation
-    # user_helper.check_prev_conversation(user_helper.db, data['user_name'])
+    user_helper.check_prev_conversation(user_helper.db, data['user_name'])
  
     answer = chatbot_module.generate_investment_advice(data['user_name'], data['input'])
 

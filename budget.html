@@ -346,6 +346,7 @@ input:focus {
 
       <div class="add-button-wrapper">
         <button class="add-button" onclick="openGoalModal()">+ Add Goal</button>
+
       </div>
     </form>
   </div>
@@ -449,7 +450,6 @@ goalForm.addEventListener('submit', function(event) {
 
   console.log("New goal added:", goal);
 
-  // TODO: append to DOM or send to backend
 
   goalForm.reset();
   closeGoalModal();

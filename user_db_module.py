@@ -525,54 +525,6 @@ def get_stock_portfolio(db, user_name):
         print("User not found.")
         return None
 
-# def create_fixed_investment(db, user_name, investment_name, investment_amount, investment_duration, ticker, start_date, end_date, interest_rate=None, investment_type='fixed_income', investment_category=None):
-#     """
-#     Create a fixed investment record in the database (MongoDB) and include risk and return rate.
-    
-#     Args:
-#         db (MongoDB database connection): The MongoDB database to store the investment data.
-#         user_name (str): The name of the user making the investment.
-#         investment_name (str): The name of the investment (e.g., "Bonds").
-#         investment_amount (float): The total amount invested.
-#         investment_duration (int): Duration of the investment (e.g., 5 years).
-#         ticker (str): Ticker symbol of the asset (e.g., 'AAPL').
-#         start_date (str): The start date of the investment in 'YYYY-MM-DD' format.
-#         end_date (str): The end date of the investment in 'YYYY-MM-DD' format.
-#         interest_rate (float, optional): The rate of return or interest rate (if applicable).
-#         investment_type (str, optional): The type of investment, default is 'fixed_income'.
-#         investment_category (str, optional): Category of the investment, e.g., 'Bonds', 'Stocks', etc.
-        
-#     Returns:
-#         dict: The created investment object with a MongoDB ObjectID.
-#     """
-#     # Calculate the risk and return rate for the asset
-#     risk, return_rate = pc.calculate_risk_and_return(ticker, start_date, end_date)
-
-#     # Prepare the document to insert into MongoDB
-#     investment = {
-#         'user_name': user_name,
-#         'investment_name': investment_name,
-#         'investment_amount': investment_amount,
-#         'investment_duration': investment_duration,
-#         'interest_rate': interest_rate if interest_rate else None,  # Optional field
-#         'start_date': start_date,
-#         'end_date': end_date,
-#         'investment_type': investment_type,
-#         'investment_category': investment_category if investment_category else None,  # Optional field
-#         'risk': risk,  # Add the calculated risk (volatility)
-#         'return_rate': return_rate,  # Add the calculated return rate
-#         'date_created': datetime.now()  # Add the creation timestamp
-#     }
-
-    # Insert the investment document into MongoDB
-    # result = db.fixed_investments.insert_one(investment)
-    
-    # Return the inserted investment document with its MongoDB ObjectId
-    # return {
-    #     'investment_id': str(result.inserted_id),
-    #     'investment_data': investment
-    # }
-
 def add_fixed_investment(db, user_name, investment_name, investment_amount, investment_duration, interest_rate, start_date, end_date, risk, return_rate):
     user = db.users.find_one({"user_name": user_name})
     if user:
@@ -597,39 +549,6 @@ def add_fixed_investment(db, user_name, investment_name, investment_amount, inve
         print("Expense added successfully.")
     else:
         print("User not found.")
-    # Define the new investment to add
-    
-    # # get all current fixed investments if they exist
-    # user = db.users.find_one({"user_name": user_name})
-    # if user:
-    #     # Check if the user already has a fixed investments field
-    #     if "fixed_investments" not in user:
-    #         db.users.update_one({"user_name": user_name}, {"$set": {"fixed_investments": []}})
-        
-    #     # Add the new investment to the user's fixed investments array
-    #     db.users.update_one({"user_name": user_name}, {"$push": {"fixed_investments": new_investment}})
-    #     print("Fixed investment added successfully.")
-    # else:
-    #     print("User not found.")
-    
-    # add new investment to fixed investments
-
-    
-    # # Find the user and ensure the portfolio exists, then push the new investment
-    # result = db.users.update_one(
-    #     {"user_name": user_name},
-    #     {
-    #         {"$set": {"fixed_investment": fixed_investment}}
-    #     },
-    #     upsert=True  # Creates the user document if it doesn't exist
-    # )
-    
-    # Check if the user was found or created
-    # if result.matched_count == 0 and result.upserted_id is None:
-    #     return {"error": "User not found or unable to create."}
-
-    # # Confirm the update
-    # return {"message": f"Fixed investment '{investment_name}' added successfully to {user_name}'s portfolio."}
 
 
 def create_fixed_investment(db, user_name, investment_name, investment_amount, investment_duration, risk, return_rate):
@@ -833,6 +752,87 @@ def overall_investments_risk(db, user_name):
         overall_return = (total_fixed_amount * sum(investment["return_rate"] for investment in fixed_investments) + total_stock_amount * sum(stock_risks)) / total_amount
         return overall_risk, overall_return
 
+# def create_fixed_investment(db, user_name, investment_name, investment_amount, investment_duration, ticker, start_date, end_date, interest_rate=None, investment_type='fixed_income', investment_category=None):
+#     """
+#     Create a fixed investment record in the database (MongoDB) and include risk and return rate.
+    
+#     Args:
+#         db (MongoDB database connection): The MongoDB database to store the investment data.
+#         user_name (str): The name of the user making the investment.
+#         investment_name (str): The name of the investment (e.g., "Bonds").
+#         investment_amount (float): The total amount invested.
+#         investment_duration (int): Duration of the investment (e.g., 5 years).
+#         ticker (str): Ticker symbol of the asset (e.g., 'AAPL').
+#         start_date (str): The start date of the investment in 'YYYY-MM-DD' format.
+#         end_date (str): The end date of the investment in 'YYYY-MM-DD' format.
+#         interest_rate (float, optional): The rate of return or interest rate (if applicable).
+#         investment_type (str, optional): The type of investment, default is 'fixed_income'.
+#         investment_category (str, optional): Category of the investment, e.g., 'Bonds', 'Stocks', etc.
+        
+#     Returns:
+#         dict: The created investment object with a MongoDB ObjectID.
+#     """
+#     # Calculate the risk and return rate for the asset
+#     risk, return_rate = pc.calculate_risk_and_return(ticker, start_date, end_date)
+
+#     # Prepare the document to insert into MongoDB
+#     investment = {
+#         'user_name': user_name,
+#         'investment_name': investment_name,
+#         'investment_amount': investment_amount,
+#         'investment_duration': investment_duration,
+#         'interest_rate': interest_rate if interest_rate else None,  # Optional field
+#         'start_date': start_date,
+#         'end_date': end_date,
+#         'investment_type': investment_type,
+#         'investment_category': investment_category if investment_category else None,  # Optional field
+#         'risk': risk,  # Add the calculated risk (volatility)
+#         'return_rate': return_rate,  # Add the calculated return rate
+#         'date_created': datetime.now()  # Add the creation timestamp
+#     }
+
+    # Insert the investment document into MongoDB
+    # result = db.fixed_investments.insert_one(investment)
+    
+    # Return the inserted investment document with its MongoDB ObjectId
+    # return {
+    #     'investment_id': str(result.inserted_id),
+    #     'investment_data': investment
+    # }
+
+    # Define the new investment to add
+    
+    # # get all current fixed investments if they exist
+    # user = db.users.find_one({"user_name": user_name})
+    # if user:
+    #     # Check if the user already has a fixed investments field
+    #     if "fixed_investments" not in user:
+    #         db.users.update_one({"user_name": user_name}, {"$set": {"fixed_investments": []}})
+        
+    #     # Add the new investment to the user's fixed investments array
+    #     db.users.update_one({"user_name": user_name}, {"$push": {"fixed_investments": new_investment}})
+    #     print("Fixed investment added successfully.")
+    # else:
+    #     print("User not found.")
+    
+    # add new investment to fixed investments
+
+    
+    # # Find the user and ensure the portfolio exists, then push the new investment
+    # result = db.users.update_one(
+    #     {"user_name": user_name},
+    #     {
+    #         {"$set": {"fixed_investment": fixed_investment}}
+    #     },
+    #     upsert=True  # Creates the user document if it doesn't exist
+    # )
+    
+    # Check if the user was found or created
+    # if result.matched_count == 0 and result.upserted_id is None:
+    #     return {"error": "User not found or unable to create."}
+
+    # # Confirm the update
+    # return {"message": f"Fixed investment '{investment_name}' added successfully to {user_name}'s portfolio."}
 
 
 # def overall_investments_risk(db, user_name):

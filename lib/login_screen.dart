@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'create_account.dart';
+import 'dashboard.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -62,7 +63,10 @@ class _LoginScreenState extends State<LoginScreen> {
               SizedBox(
                 width: 200,
                 child: OutlinedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => Dashboard()));
+                  },
                   child: const Text('Login'),
                 ),
               ),

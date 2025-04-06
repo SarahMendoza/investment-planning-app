@@ -58,14 +58,14 @@ class _CreateAccountState extends State<CreateAccount> {
                   labelText: 'Username',
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 8),
               const TextField(
                 obscureText: true,
                 decoration: InputDecoration(
                   labelText: 'Password',
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 8),
               const TextField(
                 obscureText: true,
                 decoration: InputDecoration(

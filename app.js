@@ -87,5 +87,9 @@ function openStockModal() {
           console.error("Failed to load fixed assets:", err);
         });
     }
+
+  
+    
+    
     
 }

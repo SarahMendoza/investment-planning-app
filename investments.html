@@ -86,15 +86,22 @@
         <span class="top-right-icon" onclick="openStockModal()">⋮</span>
       </h3>
       <hr/>
-      <div class="labeled-row"><span>Risk</span><strong>$500,000</strong></div><hr/>
-      <div class="labeled-row"><span>Return Rate</span><strong>$500,000</strong></div>
+      <div class="labeled-row">
+        <span>Risk</span>
+        <strong id="portfolio-risk">Loading...</strong>
+      </div>
+      <hr/>
+  <div class="labeled-row">
+    <span>Return Rate</span>
+    <strong id="portfolio-return">Loading...</strong>
+  </div>
     </div>
 
     <!-- Fixed Assets -->
     <div class="card">
-      <h3>Fixed Assets</h3><hr/>
-      <div id="fixedAssetsContainer"></div>
-    </div>
+  <h3>Fixed Assets</h3><hr/>
+  <div id="fixedAssetsContainer"></div>
+</div>
 
     <!-- Cash Investment -->
     <!-- <div class="card">
@@ -131,28 +138,66 @@
   </div>
 
   <script>
-    function loadFixedAssets() {
-      fetch('http://localhost:5000/api/fixed-assets')
+    // Load summary stats for the card
+    function loadPortfolioSummary() {
+      fetch('http://localhost:5000/api/portfolio-summary')
         .then(res => res.json())
         .then(data => {
-          const container = document.getElementById('fixedAssetsContainer');
-          container.innerHTML = "";
-          data.forEach(asset => {
-            const row = document.createElement('div');
-            row.className = "labeled-row";
-            row.innerHTML = `
-              <span>${asset.label}</span>
-              <strong>${asset.value}</strong>
-            `;
-            container.appendChild(row);
-            container.appendChild(document.createElement('hr'));
-          });
+          document.getElementById('portfolio-risk').textContent = data.risk;
+          document.getElementById('portfolio-return').textContent = data.returnRate;
         })
-        .catch(err => console.error("Failed to load fixed assets:", err));
+        .catch(err => {
+          console.error("Failed to fetch portfolio summary:", err);
+          document.getElementById('portfolio-risk').textContent = "Error";
+          document.getElementById('portfolio-return').textContent = "Error";
+        });
     }
   
+    // Load full stock table into modal
+    function openStockModal() {
+      document.getElementById('stockModal').style.display = 'flex';
+  
+      fetch('http://localhost:5000/api/stocks')
+        .then(res => res.json())
+        .then(data => {
+          const container = document.getElementById('stockRows');
+          container.innerHTML = "";
+  
+          data.forEach(stock => {
+            const row = document.createElement('div');
+            row.className = "stock-row";
+            row.innerHTML = `
+              <span style="flex: 2;">${stock.name}</span>
+              <span style="flex: 0.8;">${stock.risk}</span>
+              <span style="flex: 0.8;">${stock.rate}</span>
+              <span style="flex: 0.8; text-align: right;" class="eyeball" onclick="alert('Graph for ${stock.name}')">
+                <i class="fas fa-eye"></i>
+              </span>
+            `;
+            container.appendChild(row);
+          });
+        })
+        .catch(err => {
+          console.error("Failed to load stock details:", err);
+        });
+    }
+  
+    // Close modal
+    function closeStockModal() {
+      document.getElementById('stockModal').style.display = 'none';
+    }
+  
+    // Allow clicking outside modal to close
+    window.onclick = function(event) {
+      const modal = document.getElementById('stockModal');
+      if (event.target === modal) {
+        closeStockModal();
+      }
+    }
+  
+    // Call summary fetch when page loads
     document.addEventListener("DOMContentLoaded", () => {
-      loadFixedAssets();  // this is where you trigger it
+      loadPortfolioSummary();
     });
   </script>
 </body>

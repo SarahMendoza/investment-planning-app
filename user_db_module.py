@@ -175,20 +175,69 @@ def update_stock_portfolio(db, user_name, field_to_update, new_value):
     else:
         print("User not found.")
 
-def add_stock(db, user_name, stock_name, stock_amount):
+# def add_stock(db, user_name, stock_name, investment_amount):
+#     user = db.users.find_one({"user_name": user_name})
+#     if user:
+#         # Check if the user has a portfolio
+#         if "portfolio" in user:
+#             portfolio = user["portfolio"]
+#             stocks = portfolio.get("stocks", [])
+            
+#             # Add the stock to the user's portfolio
+#             if stock_name not in stocks:
+#                 stocks.append(stock_name)
+#                 investment_amounts = portfolio["investment_amount"] * portfolio["investment_split"]
+#                 # investment_split = investment_amounts/portfolio["investment_amount"]
+#                 investment_split = [x / portfolio["investment_amount"] for x in investment_amounts]
+#                 portfolio["investment_amount"] += investment_amount
+#                 # Update the investment split accordingly
+#                 investment_split.append(investment_amount/portfolio["investment_amount"])
+
+                
+#                 # find total invesment amount for current portfolio
+#                 total_investment = sum(investment_split)
+#                 db.users.update_one(
+#                     {"user_name": user_name},
+#                     {"$set": {"portfolio.stocks": stocks}},
+#                     {"$set": {"portfolio.investment_split": investment_split}},
+#                     {"$set": {"portfolio.investment_amount": total_investment}}
+#                 )
+#                 #print(f"Stock '{stock_name}' added successfully.")
+#             else:
+#                 print(f"Stock '{stock_name}' already exists in the portfolio.")
+#         else:
+#             print("User does not have a portfolio.")
+#     else:
+#         print("User not found.")
+
+def add_stock(db, user_name, stock_name, investment_amount):
     user = db.users.find_one({"user_name": user_name})
     if user:
         # Check if the user has a portfolio
         if "portfolio" in user:
             portfolio = user["portfolio"]
             stocks = portfolio.get("stocks", [])
+            investment_amounts = portfolio.get("investment_amounts", [])  # list for each stock's investment amount
+            investment_splits = portfolio.get("investment_splits", [])  # list for each stock's investment split
             
             # Add the stock to the user's portfolio
             if stock_name not in stocks:
+                # Append the new stock and its associated investment amount and split
                 stocks.append(stock_name)
+                investment_amounts.append(investment_amount)
+                # Calculate the new investment split for this stock
+                total_investment = sum(investment_amounts)
+                investment_splits = [amount / total_investment for amount in investment_amounts]
+
+                # Update the user's portfolio with the new data
                 db.users.update_one(
                     {"user_name": user_name},
-                    {"$set": {"portfolio.stocks": stocks}}
+                    {"$set": {
+                        "portfolio.stocks": stocks,
+                        "portfolio.investment_amounts": investment_amounts,
+                        "portfolio.investment_splits": investment_splits,
+                        "portfolio.investment_amount": total_investment
+                    }}
                 )
                 print(f"Stock '{stock_name}' added successfully.")
             else:
@@ -197,6 +246,7 @@ def add_stock(db, user_name, stock_name, stock_amount):
             print("User does not have a portfolio.")
     else:
         print("User not found.")
+
 
 def delete_stock(db, user_name, stock_name):
     user = db.users.find_one({"user_name": user_name})
@@ -331,8 +381,8 @@ def create_goal(db, user_name, goal_name, goal_amount, goal_duration, goal_curre
             "goal_name": goal_name,
             "goal_amount": goal_amount,
             "goal_duration": goal_duration,
-            "goal_start_date": datetime.now().strftime("%Y-%m-%d"),
-            "goal_end_date": (datetime.now() + timedelta(days=goal_duration)).strftime("%Y-%m-%d"),
+            "goal_start_date": datetime.now().strftime("%m-%d-%Y"),
+            "goal_end_date": (datetime.now() + timedelta(days=goal_duration)).strftime("%m-%d-%Y"),
             "goal_current_amount": goal_current_amount,
             "weekly_contributions": weekly_contributions
         }
@@ -461,16 +511,328 @@ def get_stock_portfolio(db, user_name):
         # Retrieve the user's portfolio
         portfolio = user.get("portfolio", {})
         if portfolio and "stocks" in portfolio:
-            print("User's stock portfolio:")
-            for stock, split in portfolio["stocks"].items():
-                print(f"- {stock}: {split}%")
-            return portfolio["stocks"]
+            # also get the risk and return rate
+            risk = portfolio.get("risk")
+            return_rate = portfolio.get("return_rate")
+            # print("User's stock portfolio:")
+            # for stock, split in portfolio["stocks"].items():
+            #     print(f"- {stock}: {split}%")
+            return portfolio["stocks"], risk, return_rate
         else:
             print("No stock portfolio found for the user.")
             return {}
     else:
         print("User not found.")
         return None
+
+# def create_fixed_investment(db, user_name, investment_name, investment_amount, investment_duration, ticker, start_date, end_date, interest_rate=None, investment_type='fixed_income', investment_category=None):
+#     """
+#     Create a fixed investment record in the database (MongoDB) and include risk and return rate.
+    
+#     Args:
+#         db (MongoDB database connection): The MongoDB database to store the investment data.
+#         user_name (str): The name of the user making the investment.
+#         investment_name (str): The name of the investment (e.g., "Bonds").
+#         investment_amount (float): The total amount invested.
+#         investment_duration (int): Duration of the investment (e.g., 5 years).
+#         ticker (str): Ticker symbol of the asset (e.g., 'AAPL').
+#         start_date (str): The start date of the investment in 'YYYY-MM-DD' format.
+#         end_date (str): The end date of the investment in 'YYYY-MM-DD' format.
+#         interest_rate (float, optional): The rate of return or interest rate (if applicable).
+#         investment_type (str, optional): The type of investment, default is 'fixed_income'.
+#         investment_category (str, optional): Category of the investment, e.g., 'Bonds', 'Stocks', etc.
+        
+#     Returns:
+#         dict: The created investment object with a MongoDB ObjectID.
+#     """
+#     # Calculate the risk and return rate for the asset
+#     risk, return_rate = pc.calculate_risk_and_return(ticker, start_date, end_date)
+
+#     # Prepare the document to insert into MongoDB
+#     investment = {
+#         'user_name': user_name,
+#         'investment_name': investment_name,
+#         'investment_amount': investment_amount,
+#         'investment_duration': investment_duration,
+#         'interest_rate': interest_rate if interest_rate else None,  # Optional field
+#         'start_date': start_date,
+#         'end_date': end_date,
+#         'investment_type': investment_type,
+#         'investment_category': investment_category if investment_category else None,  # Optional field
+#         'risk': risk,  # Add the calculated risk (volatility)
+#         'return_rate': return_rate,  # Add the calculated return rate
+#         'date_created': datetime.now()  # Add the creation timestamp
+#     }
+
+    # Insert the investment document into MongoDB
+    # result = db.fixed_investments.insert_one(investment)
+    
+    # Return the inserted investment document with its MongoDB ObjectId
+    # return {
+    #     'investment_id': str(result.inserted_id),
+    #     'investment_data': investment
+    # }
+
+def add_fixed_investment(db, user_name, investment_name, investment_amount, investment_duration, interest_rate, start_date, end_date, risk, return_rate):
+    user = db.users.find_one({"user_name": user_name})
+    if user:
+        # Check if the user already has an expenses field
+        if "expenses" not in user:
+            db.users.update_one({"user_name": user_name}, {"$set": {"expenses": []}})
+        
+        # Create the new expense entry
+        new_investment = {
+        "investment_name": investment_name,
+        "investment_amount": investment_amount,
+        "investment_duration": investment_duration,
+        "interest_rate": interest_rate,
+        "start_date": start_date,
+        "end_date": end_date,
+        "risk": risk,
+        "return_rate": return_rate
+    }
+        
+        # Add the new expense to the user's expenses array
+        db.users.update_one({"user_name": user_name}, {"$push": {"fixed_investments": new_investment}})
+        print("Expense added successfully.")
+    else:
+        print("User not found.")
+    # Define the new investment to add
+    
+    # # get all current fixed investments if they exist
+    # user = db.users.find_one({"user_name": user_name})
+    # if user:
+    #     # Check if the user already has a fixed investments field
+    #     if "fixed_investments" not in user:
+    #         db.users.update_one({"user_name": user_name}, {"$set": {"fixed_investments": []}})
+        
+    #     # Add the new investment to the user's fixed investments array
+    #     db.users.update_one({"user_name": user_name}, {"$push": {"fixed_investments": new_investment}})
+    #     print("Fixed investment added successfully.")
+    # else:
+    #     print("User not found.")
+    
+    # add new investment to fixed investments
+
+    
+    # # Find the user and ensure the portfolio exists, then push the new investment
+    # result = db.users.update_one(
+    #     {"user_name": user_name},
+    #     {
+    #         {"$set": {"fixed_investment": fixed_investment}}
+    #     },
+    #     upsert=True  # Creates the user document if it doesn't exist
+    # )
+    
+    # Check if the user was found or created
+    # if result.matched_count == 0 and result.upserted_id is None:
+    #     return {"error": "User not found or unable to create."}
+
+    # # Confirm the update
+    # return {"message": f"Fixed investment '{investment_name}' added successfully to {user_name}'s portfolio."}
+
+
+def create_fixed_investment(db, user_name, investment_name, investment_amount, investment_duration, risk, return_rate):
+    user = db.users.find_one({"user_name": user_name})
+    
+    if user:
+        # Check if the user has a portfolio
+        # if "portfolio" in user:
+            # portfolio = user["portfolio"]
+            # investments = portfolio.get("fixed_investments", [])
+            
+            # Add new fixed investment to the list
+            new_investment = {
+                "investment_name": investment_name,
+                "investment_amount": investment_amount,
+                "investment_duration": investment_duration,
+                "risk": risk,
+                "return_rate": return_rate
+            }
+            # investments.append(new_investment)
+            
+            # Update the user's fixed investments
+            db.users.update_one(
+                {"user_name": user_name},
+                {"$push": {"fixed_investments": [new_investment]}}
+            )
+            print(f"Fixed investment '{investment_name}' added successfully.")
+        # else:
+        #     print("User does not have a portfolio.")
+    else:
+        print("User not found.")
+
+def overall_investments_risk(db, user_name):
+    """
+    Calculate the overall risk of the user's investments.
+    
+    Parameters:
+    - db: Database connection object.
+    - user_name (str): The ID of the user.
+    
+    Returns:
+    - overall_risk (float): The overall risk of the user's investments, including stock portfolio and fixed investments, weighted by investment amounts.
+    """
+    # Retrieve stocks and their associated risks
+    stocks, stock_risks, stock_amounts = get_stock_portfolio(db, user_name)
+
+    # Debugging: Validate if stock data is properly fetched
+    if not stocks or stock_amounts is None or not stock_risks:
+        print(f"Error: Invalid stock data for user '{user_name}'. Stocks: {stocks}, Amounts: {stock_amounts}, Risks: {stock_risks}")
+        return 0
+    
+    # Find the user in the database
+    user = db.users.find_one({"user_name": user_name})
+    if user:
+        # Retrieve the user's fixed investments
+        fixed_investments = user.get("portfolio", {}).get("fixed_investments", [])
+        
+        # Initialize variables for total risk and total amount
+        total_fixed_risk = 0
+        total_fixed_amount = 0
+        fixed_total_risk = 0
+        
+        # Debugging: Print fixed investments data
+        print(f"Fixed investments for user '{user_name}': {fixed_investments}")
+        
+        if fixed_investments:
+            # Calculate the total risk and amount for fixed investments
+            total_fixed_amount = sum(investment["investment_amount"] for investment in fixed_investments)
+            print(f"Total fixed amount: {total_fixed_amount}")
+            
+            for investment in fixed_investments:
+                if investment.get("risk") is None:
+                    print(f"Warning: Missing risk for investment: {investment}")
+                    continue  # Skip if risk is missing
+                fixed_investment_risk = investment["risk"] * (investment["investment_amount"] / total_fixed_amount)
+                total_fixed_risk += fixed_investment_risk
+            print(f"Total fixed risk: {total_fixed_risk}")
+        else:
+            print("No fixed investments found for the user.")
+            total_fixed_risk = 0  # Assign default risk value if no fixed investments
+
+        # Initialize variables for stocks if available
+        total_stock_risk = 0
+        total_stock_amount = sum(stock_amounts)
+        print(f"Total stock amount: {total_stock_amount}")
+        
+        if stocks:
+            # Calculate the total risk for stocks based on their amounts
+            for i, stock in enumerate(stocks):
+                if stock_risks[i] is None:
+                    print(f"Warning: Missing risk for stock: {stock}")
+                    continue  # Skip if risk is missing
+                stock_risk = stock_risks[i] * (stock_amounts[i] / total_stock_amount)
+                total_stock_risk += stock_risk
+            print(f"Total stock risk: {total_stock_risk}")
+        else:
+            print("No stocks found for the user.")
+        
+        # If no investments at all, just return 0
+        if total_fixed_amount == 0 and total_stock_amount == 0:
+            print(f"No investments found for user '{user_name}'. Returning risk of 0.")
+            return 0
+        
+        # Calculate the overall weighted risk of the portfolio
+        total_amount = total_fixed_amount + total_stock_amount
+        print(f"Total amount (fixed + stocks): {total_amount}")
+        
+        total_risk = (total_fixed_risk * total_fixed_amount + total_stock_risk * total_stock_amount) / total_amount
+        print(f"Calculated total risk: {total_risk}")
+        
+        return total_risk
+    else:
+        print(f"User '{user_name}' not found.")
+        return 0
+
+
+def get_fixed_investments(db, user_name):
+    """
+    Retrieve the fixed investments of a user.
+
+    Parameters:
+    - db: Database connection object.
+    - user_name (str): The ID of the user.
+
+    Returns:
+    - fixed_investments (list): The user's fixed investments, or None if not found.
+    """
+    user = db.users.find_one({"user_name": user_name})
+    if user:
+        # Retrieve the user's fixed investments
+        fixed_investments = user.get("fixed_investments", [])
+        if fixed_investments:
+            print("User's fixed investments:")
+            for investment in fixed_investments:
+                print(f"- {investment['investment_name']}: {investment}")
+            return fixed_investments
+        else:
+            print("No fixed investments found for the user.")
+            return []
+    else:
+        print("User not found.")
+        return None
+    
+def overall_investments_risk(db, user_name):
+    """
+    Calculate the overall risk and return of the user's investments.
+    
+    Parameters:
+    - db: Database connection object.
+    - user_name (str): The ID of the user.
+    
+    Returns:
+    - overall_risk (float): The overall risk of the user's investments.
+    - overall_return (float): The overall return of the user's investments.
+    """
+    stocks, stock_risks, stock_amounts = get_stock_portfolio(db, user_name)
+    
+    # Find the user in the database
+    user = db.users.find_one({"user_name": user_name})
+    if user:
+        # Retrieve the user's fixed investments
+        fixed_investments = user.get("portfolio", {}).get("fixed_investments", [])
+        
+        # Initialize variables for total risk and total amount
+        total_fixed_risk = 0
+        total_fixed_amount = 0
+        fixed_total_risk = 0
+        
+        if fixed_investments:
+            # Calculate the total risk and amount for fixed investments
+            total_fixed_amount = sum(investment["investment_amount"] for investment in fixed_investments)
+            
+            for investment in fixed_investments:
+                if investment.get("risk") is None:
+                    continue  # Skip if risk is missing
+                fixed_investment_risk = investment["risk"] * (investment["investment_amount"] / total_fixed_amount)
+                total_fixed_risk += fixed_investment_risk
+
+        # Initialize variables for stocks if available
+        total_stock_risk = 0
+        total_stock_amount = sum(stock_amounts)
+        
+        if stocks:
+            # Calculate the total risk for stocks based on their amounts
+            for i, stock in enumerate(stocks):
+                if stock_risks[i] is None:
+                    continue  # Skip if risk is missing
+                stock_risk = stock_risks[i] * (stock_amounts[i] / total_stock_amount)
+                total_stock_risk += stock_risk
+
+        # If no investments at all, just return 0
+        if total_fixed_amount == 0 and total_stock_amount == 0:
+            return 0, 0
+        
+        # Calculate the overall weighted risk of the portfolio
+        total_amount = total_fixed_amount + total_stock_amount
+        
+        overall_risk = (total_fixed_risk * total_fixed_amount + total_stock_risk * total_stock_amount) / total_amount
+        
+        # Calculate overall
+        overall_return = (total_fixed_amount * sum(investment["return_rate"] for investment in fixed_investments) + total_stock_amount * sum(stock_risks)) / total_amount
+        return overall_risk, overall_return
+
 
 
 # def overall_investments_risk(db, user_name):
@@ -484,7 +846,52 @@ def get_stock_portfolio(db, user_name):
 #     Returns:
 #     - overall_risk (float): The overall risk of the user's investments including stock portfolio and fixed using weighted average based on split.
 #     """
-#     portfolio_risk = get()
+#     stocks, risk, return_rate = get_stock_portfolio(db, user_name)
+#     # find all fixed investments for user
+#     user = db.users.find_one({"user_name": user_name})
+#     if user:
+#         # Retrieve the user's fixed investments
+#         fixed_investments = user.get("portfolio", {}).get("fixed_investments", [])
+#         if fixed_investments:
+#             # Calculate the overall risk of fixed investments
+#             total_fixed_risk = sum(investment["risk"] for investment in fixed_investments)
+#             total_fixed_amount = sum(investment["investment_amount"] for investment in fixed_investments)
+
+#             # Calculate the weighted average risk of fixed investments
+#             for investment in fixed_investments:
+#                 investment["risk"] = investment["risk"] * (investment["investment_amount"] / total_fixed_amount)
+            
+#             fixed_total_risk = sum(investment["risk"])
+#         else:
+#             print("No fixed investments found for the user.")
+#             return 0
+
+#         # Calculate the overall risk of stocks
+#         if stocks:
+#             # Calculate the risk of stocks based on the investment split
+#             total_stock_amount = sum(investment["investment_amount"] for investment in stocks)
+#             # Calculate the weighted average risk of stocks
+#             for investment in stocks:
+#                 investment["risk"] = investment["risk"] * (investment["investment_amount"] / total_stock_amount)
+#             stock_total_risk = sum(investment["risk"])
+#         else:
+#             print("No stocks found for the user.")
+#             return 0
+
+#         # Calculate the overall weighted risk of the portfolio
+#         if stocks and fixed_investments:
+#             total_amount = total_fixed_amount + sum(investment["investment_amount"] for investment in stocks)
+#             total_risk = (fixed_total_risk * total_fixed_amount + stock_total_risk * sum(investment["investment_amount"] for investment in stocks)) / total_amount
+
+#             # Combine the risks using a weighted average based on investment amounts
+#         return total_risk
+#         # fixed_investment_weight = total_fixed_amount / (total_fixed_amount + sum(investment["investment_amount"] for investment in stocks))
+#         # stock_weight = sum(investment["investment_amount"] for investment in stocks) / (total_fixed_amount + sum(investment["investment_amount"] for investment in stocks))
+#         # overall_risk = (fixed_investment_weight * total_fixed_risk + stock_weight * risk) / (fixed_investment_weight + stock_weight)
+#         # return overall_risk
+#     else:
+#         print("User not found.")
+#         return 0
 
 
 # def create_portfolio(db, user_name, time_horizon, investment_amount, investment_split, stocks = []):

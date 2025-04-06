@@ -5,7 +5,7 @@ import yfinance as yf
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 import json
-import user_helper, user_db_module
+import user_helper, user_db_module, chatbot_module
 
 app = Flask(__name__)
 CORS(app)
@@ -264,6 +264,30 @@ def add_stock_to_portfolio():
     )
 
     return jsonify({"message": "Stock added to portfolio successfully!"}), 201
+
+
+#############################################
+# APIs for gemini                           #
+#############################################pip
+
+#call to gemini by user
+@app.route('/chat/send', methods=['POST'])
+def get_gemini_portfolio():
+    data = request.get_json()
+    print("Received request to get Gemini portfolio:", data)
+
+    # query the database to check if the username exists
+    user = user_helper.get_user_by_username(user_helper.db, data['user_name'])
+    
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    # Check if the user has a previous conversation
+    # user_helper.check_prev_conversation(user_helper.db, data['user_name'])
+ 
+    answer = chatbot_module.generate_investment_advice(data['user_name'], data['input'])
+
+    return jsonify(answer), 200
 
 
 

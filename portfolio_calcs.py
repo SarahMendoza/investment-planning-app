@@ -49,3 +49,35 @@ def calculate_portfolio_performance(tickers, weights):
 # portfolio_return, portfolio_risk = calculate_portfolio_performance(tickers, weights)
 # print(f"Portfolio Expected Return: {portfolio_return:.4f}")
 # print(f"Portfolio Risk (Volatility): {portfolio_risk:.4f}")
+
+def calculate_risk_and_return(ticker, start_date, end_date):
+    """
+    Calculate the risk (volatility) and return rate of the investment based on historical data from Yahoo Finance.
+
+    Args:
+        ticker (str): The stock or asset ticker (e.g., 'AAPL', 'GOOG').
+        start_date (str): Start date of the historical data (e.g., '2022-01-01').
+        end_date (str): End date of the historical data (e.g., '2023-01-01').
+
+    Returns:
+        tuple: (risk, return_rate)
+    """
+    # Fetch historical data for the given ticker
+    data = yf.download(ticker, start=start_date, end=end_date)
+    
+    # Calculate daily percentage change (returns)
+    data['Daily Return'] = data['Adj Close'].pct_change()
+
+    # Calculate risk (volatility) as standard deviation of daily returns
+    risk = data['Daily Return'].std()
+
+    # Calculate return rate as the total percentage change from start to end date
+    return_rate = (data['Adj Close'][-1] - data['Adj Close'][0]) / data['Adj Close'][0]
+
+    return risk, return_rate
+
+def calculate_savings_return(principal, interest_rate, years):
+    """
+    Calculate the return on a savings account over a period of time.
+    """
+    return principal * interest_rate * years

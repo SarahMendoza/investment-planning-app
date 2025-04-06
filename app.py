@@ -110,7 +110,10 @@ def login_user():
     if user['password'] != data['password']:
         return jsonify({"error": "Invalid password"}), 401
 
-    return jsonify({"message": "Login successful!"}), 200
+    return jsonify({
+        "user_name": user["user_name"],
+        "message": "Login successful"
+    }), 200
 
 
 #get user info by username

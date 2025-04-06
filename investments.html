@@ -163,9 +163,9 @@
       <div id="stockRows"></div>
 
       <div class="add-button-wrapper">
-      
-        <button class="add-button" onclick="alert('Add Stock')">+ Add Stock</button>
+        <button class="add-button" onclick="openStockModal()">+ Add Stock</button>
       </div>
+      
       
     </div>
   </div>
@@ -178,6 +178,7 @@
     <button onclick="window.location.href='investments.html'">Investments</button>
     <button onclick="window.location.href='chat.html'">Chat</button>
   </div>
+
 
   <script>
     // Load summary stats for the card
@@ -242,5 +243,52 @@
       loadPortfolioSummary();
     });
   </script>
+  <script>
+    const addStockModal = document.getElementById('addStockModal');
+    const addStockForm = document.getElementById('addStockForm');
+  
+    function openAddStockModal() {
+      addStockModal.style.display = 'flex';
+    }
+  
+    function closeAddStockModal() {
+      addStockModal.style.display = 'none';
+    }
+  
+    window.addEventListener('click', (e) => {
+      if (e.target === addStockModal) {
+        closeAddStockModal();
+      }
+    });
+  
+    stockForm.addEventListener('submit', function(event) {
+      event.preventDefault();
+  
+      const addStockName = document.getElementById('addStockName').value;
+      console.log("New stock added:", stockName);
+  
+      // TODO: Add to stock list or send to backend
+  
+      stockForm.reset();
+      closeAddStockModal();
+    });
+  </script>
+  
+  <!-- Add Stock Modal -->
+  <div id="addStockModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeAddStockModal()">&times;</span>
+      <h2>Add Stock</h2>
+      <form id="addStockForm">
+        <label for="addStockName">Stock Name:</label><br/>
+        <input type="text" id="stockName" name="stockName" required><br/><br/>
+
+        <div class="add-button-wrapper">
+          <button class="add-button" type="submit">Add Stock</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
 </body>
 </html>

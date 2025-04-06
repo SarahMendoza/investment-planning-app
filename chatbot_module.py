@@ -27,7 +27,7 @@ from flask import Flask, request, jsonify
 # Example API base URL and headers for stock analysis
 BASE_URL = 'https://your-stock-analysis-api.com'  # Replace with your actual API base URL
 headers = {
-    'Authorization': 'Bearer your_api_key_here'  # Replace with your actual API key
+    'Authorization': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDM5NDA0NjUsImlhdCI6MTc0MzkzNjg2NSwic3ViIjoidXNlcl9pZCJ9.1nPu1rWrV2UzatwRYSOXxfW3NONrpJIASc6GOjJXLEk'  # Replace with your actual API key
 }
 
 # Function to extract stock ticker from user message
@@ -39,7 +39,7 @@ def extract_stock_ticker(user_message):
     return None
 
 
-def get_stock_data(ticker):
+def get_stock_risk(ticker):
     response = requests.get(
         f'{BASE_URL}/analyze/{ticker}', 
         headers=headers
@@ -207,10 +207,13 @@ def generate_investment_advice(user_id, user_input, tone="professional", length=
             risk_message += f"\nThe volatility of {stock_ticker[i]} over the past year is {risk_levels[i]:.2%}. " \
                             f"The beta of {stock_ticker[i]} is {calculate_beta(stock_ticker[i]):.2f}, meaning it is {'more' if calculate_beta(stock_ticker[i]) > 1 else 'less'} volatile than the market."
             i += 1
+
+        
         
         # Build the prompt for investment advice
         prompt = f"User's age: {age}, income: {income}, investment goals: {goals}, time_horizon: {time_horizon}, monthly budget: {budget}, . Based on this, " \
-                 f"here's a risk analysis for stocks: {risk_message}. Please provide investment advice in a {tone} and {length} manner.\n\n{user_input}"
+                 f"here's a risk analysis for stocks: {risk_message}." \
+                 f"when asked about a specific stock, like 'MSFT', please provide the current risk level: {get_stock_risk(extract_stock_ticker(user_input))}. " \
 
     # Generate advice using Gemini model
     generated_advice = generate_content_with_gemini(user_input, tone, length)
@@ -248,6 +251,14 @@ if __name__ == '__main__':
     create_portfolio(db, "sarahj123", 12, 5000, investment_split = [0.5, 0.5], stocks=['APPL', 'XOM'])
     user_id = "sarahj123"  # Example user ID
     user_message = "What should I invest in today?"
+
+    # Generate investment advice
+    investment_advice = generate_investment_advice(user_id, user_message, tone="professional", length="short")
+
+    # Print the advice
+    print(f"Investment Advice: {investment_advice}")
+
+    user_message = "How about 'MSFT'?"
 
     # Generate investment advice
     investment_advice = generate_investment_advice(user_id, user_message, tone="professional", length="short")

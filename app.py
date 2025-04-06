@@ -110,7 +110,10 @@ def login_user():
     if user['password'] != data['password']:
         return jsonify({"error": "Invalid password"}), 401
 
-    return jsonify({"message": "Login successful!"}), 200
+    return jsonify({
+        "user_name": user["user_name"],
+        "message": "Login successful"
+    }), 200
 
 
 #get user info by username
@@ -162,15 +165,105 @@ def add_expense():
     return jsonify({"message": "Expense added successfully!"}), 201
 
 #############################################
-# APIs for budget -- expenses               #
+# APIs for budget goals                     #
 #############################################
 
+#add goal by user name
+@app.route('/goal/add', methods=['POST'])
+def add_goal():
+    data = request.get_json()
+    print("Received request to add goal:", data)
+    # query the database to check if the username exists
+    user = user_helper.get_user_by_username(user_helper.db, data['user_name'])
+
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+    user_name = data['user_name']
+    goal_name = data['goal_name']
+    goal_amount = data['goal_amount']
+    goal_duration = data['goal_duration']
+    goal_current_amount = data.get('goal_current_amount', 0)
+    weekly_contributions = data.get('weekly_contributions', 0)
+    # Check if the goal already exists
+    existing_goal = user_db_module.get_goal(user_helper.db, user_name, goal_name)
+    if existing_goal:
+        return jsonify({"error": "Goal already exists"}), 409
+    # Create the goal
+    user_db_module.create_goal(
+        user_helper.db,
+        user_name=user_name,
+        goal_name=goal_name,
+        goal_amount=goal_amount,
+        goal_duration=goal_duration,
+        goal_current_amount=goal_current_amount,
+        weekly_contributions=weekly_contributions
+    )
+    return jsonify({"message": "Goal created successfully!"}), 201
+
+ #get all goals by user name
+@app.route('/goal/get', methods=['POST'])
+def get_goals():
+    data = request.get_json()
+    print("Received request to get goals:", data)
+
+    # query the database to check if the username exists
+    user = user_helper.get_user_by_username(user_helper.db, data['user_name'])
+    
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    goals = user_db_module.get_goals(user_helper.db, data['user_name'])
+    
+    # if not goals:
+    #     return jsonify({"error": "No goals found"}), 20
+
+    return jsonify(goals), 200
 
 
 #############################################
 # APIs for portfolios                       #
 #############################################
 
+
+#get stock portfolio by user name
+@app.route('/portfolio/get', methods=['GET'])
+def get_portfolio():
+    data = request.get_json()
+    print("Received request to get portfolio:", data)
+
+    # query the database to check if the username exists
+    user = user_helper.get_user_by_username(user_helper.db, data['user_name'])
+    
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    portfolio = user_db_module.get_portfolio_by_username(user_helper.db, data['user_name'])
+    
+    if not portfolio:
+        return jsonify({"error": "Portfolio not found"}), 404
+
+    return jsonify(portfolio), 200
+
+#add stock to portfolio by user name
+@app.route('/portfolio/add', methods=['POST'])
+def add_stock_to_portfolio():
+    data = request.get_json()
+    print("Received request to add stock to portfolio:", data)
+
+    # query the database to check if the username exists
+    user = user_helper.get_user_by_username(user_helper.db, data['user_name'])
+    
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    user_db_module.add_stock_to_portfolio(
+        user_helper.db,
+        data['user_name'],
+        data['ticker'],
+        data['quantity']
+    )
+
+    return jsonify({"message": "Stock added to portfolio successfully!"}), 201
 
 
 #############################################

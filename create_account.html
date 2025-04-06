@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create Account</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Create Account</h1>
+      <div class="form-group">
+        <label>First Name</label><input type="text" id="firstName" />
+      </div>
+      <div class="form-group">
+        <label>Last Name</label><input type="text" id="lastName" />
+      </div>
+      <div class="form-group">
+        <label>Birthdate (mm-dd-yyyy)</label
+        ><input type="text" id="birthDate" />
+      </div>
+      <div class="form-group">
+        <label>Email Address</label><input type="email" id="email" />
+      </div>
+      <div class="form-group">
+        <label>Username</label><input type="text" id="username" />
+      </div>
+      <div class="form-group">
+        <label>Password</label><input type="password" id="password" />
+      </div>
+      <div class="form-group">
+        <label>Confirm Password</label
+        ><input type="password" id="confirmPassword" />
+      </div>
+      <div class="form-actions" style="justify-content: center">
+        <button onclick="submitCreateAccount()">Continue</button>
+      </div>
+    </div>
+    <script>
+      function submitCreateAccount() {
+        const email = document.getElementById("email").value;
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+        const confirmPassword =
+          document.getElementById("confirmPassword").value;
+        const firstName = document.getElementById("firstName").value;
+        const lastName = document.getElementById("lastName").value;
+        const birthDate = document.getElementById("birthDate").value;
+
+        // Validate password match
+        if (password !== confirmPassword) {
+          alert("Passwords do not match.");
+          return;
+        }
+
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+          alert("Invalid email address.");
+          return;
+        }
+
+        // Prepare the data for the POST request
+        const data = {
+          user_name: username, // Use user_name as per your API's field
+          email: email, // Email field
+          password, // Password field
+          first_name: firstName, // Example first name, change as necessary
+          last_name: lastName, // Example last name, change as necessary
+          dob: birthDate, // Example date of birth, change as necessary
+          monthly_income: 0, // Example monthly income, change as necessary
+        };
+
+        // Send a POST request to the /user/create API
+        fetch("http://127.0.0.1:5000/user/create", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data), // Convert the data to JSON format
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            // Check for success or error response
+            if (data.message) {
+              alert("Signup successful! Redirecting to login.");
+              window.location.href = "index.html";
+            } else if (data.error) {
+              alert("Signup failed: " + data.error);
+            }
+          })
+          .catch((err) => {
+            console.error("Error:", err);
+            alert("Error connecting to server.");
+          });
+      }
+    </script>
+  </body>
+</html>

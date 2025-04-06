@@ -136,20 +136,101 @@ class Dashboard extends StatelessWidget {
                 ),
                 // Right Section
                 Expanded(
-                  child: Container(
-                    child: SingleChildScrollView(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        children: List.generate(
-                          20,
-                          (index) => Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8.0),
-                            child: Text('Right Section Item ${index + 1}'),
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        // Stock Portfolio
+                        Card(
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'Portfolio',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                  ),
+                                ),
+                                // TO-DO: make this dynamic
+                                const Divider(),
+                                const Text('Thing 1'),
+                                const Divider(),
+                                const Text('Thing 2'),
+                                const Divider(),
+                                const Text('Thing 3'),
+                              ]
+                            )
+                          )
+                        ),
+                        SizedBox(height: 16),
+                        // Fixed Asset
+                        Card(
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'Fixed Assets',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                  ),
+                                ),
+                                // TO-DO: make this dynamic
+                                const Divider(),
+                                _labeledItem('Property', '\$500,000'),
+                                const Divider(),
+                                _labeledItem('Property', '\$500,000'),
+                                const Divider(),
+                                _labeledItem('Property', '\$500,000'),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                  ),
+                        SizedBox(height: 16),
+                        // Cash Investment
+                        Card(
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'Cash Investment',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                  ),
+                                ),
+                                const Divider(),
+                                _labeledItem('Thing 1', '\$15,000'),
+                                const Divider(),
+                                _labeledItem('Thing 2', '\$15,000'),
+                                const Divider(),
+                                _labeledItem('Thing 3', '\$15,500'),
+                              ]
+                            )
+                          )
+                        )
+                      ]
+                    )
+                  )
+                  // child: Container(
+                  //   child: SingleChildScrollView(
+                  //     padding: const EdgeInsets.all(16.0),
+                  //     child: Column(
+                  //       children: List.generate(
+                  //         20,
+                  //         (index) => Padding(
+                  //           padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  //           child: Text('Right Section Item ${index + 1}'),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
                 ),
               ],
             ),
@@ -158,4 +239,17 @@ class Dashboard extends StatelessWidget {
       ),
     );
   }
+}
+
+Widget _labeledItem(String label, String value) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      Text(label),
+      Text(
+        value,
+        style: const TextStyle(fontWeight: FontWeight.bold),
+      ),
+    ],
+  );
 }

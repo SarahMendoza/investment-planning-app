@@ -7,10 +7,10 @@ from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 import os
 
-os.environ['MONGODB_PASS'] = 'HackSMU2024'
+os.environ['MONGODB_PASS'] = 'pass'
 
 if "MONGODB_PASS" in os.environ:
-    uri = "mongodb+srv://sarahmendoza:HackSMU2024@cluster0.cmoki.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0".format(os.environ["MONGODB_PASS"])
+    uri = "insert URI here".format(os.environ["MONGODB_PASS"])
 else:
     raise "MONGODB_PASS not in environment"
 

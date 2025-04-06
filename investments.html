@@ -114,34 +114,11 @@
       <h2>Stock Portfolio</h2>
       <div class="stock-row" style="font-weight: bold; border-bottom: 2px solid #aaa;">
         <span style="flex: 2;">Stock</span>
-        <span style="flex: 2.1; text-align: left;">Risk</span>
-        <span style="flex: 1; text-align: left;">Return Rate</span>
-        <span style="flex: 1; text-align: right;">View Graph</span>
+        <span style="flex: 0.8;">Risk</span>
+        <span style="flex: 0.8;">Return Rate</span>
+        <span style="flex: 0.8; text-align: right;">View Graph</span>
       </div>
-      <div class="stock-row">
-        <span>APPL</span>
-        <span>Medium</span>
-        <span>8%</span>
-        <span class="eyeball" onclick="alert('Graph for APPL')">
-          <i class="fas fa-eye"></i>
-        </span>
-      </div>
-      <div class="stock-row">
-        <span>GOOG</span>
-        <span>High</span>
-        <span>12%</span>
-        <span class="eyeball" onclick="alert('Graph for GOOG')">
-          <i class="fas fa-eye"></i>
-        </span>
-      </div>
-      <div class="stock-row">
-        <span>MSFT</span>
-        <span>Low</span>
-        <span>6%</span>
-        <span class="eyeball" onclick="alert('Graph for MSFT')">
-          <i class="fas fa-eye"></i>
-        </span>
-      </div>
+      <div id="stockRows"></div>
       
     </div>
   </div>
@@ -155,21 +132,6 @@
     <button onclick="window.location.href='chat.html'">Chat</button>
   </div>
 
-  <script>
-    function openStockModal() {
-      document.getElementById('stockModal').style.display = 'flex';
-    }
-
-    function closeStockModal() {
-      document.getElementById('stockModal').style.display = 'none';
-    }
-
-    window.onclick = function(event) {
-      const modal = document.getElementById('stockModal');
-      if (event.target === modal) {
-        closeStockModal();
-      }
-    }
-  </script>
+  <script src="app.js"></script>
 </body>
 </html>

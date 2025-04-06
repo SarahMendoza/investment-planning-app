@@ -1,0 +1,25 @@
+
+
+class User:
+    def __init__(self, f_name, l_name, username, email, password):
+        self.f_name = f_name
+        self.l_name = l_name
+        self.username = username
+        self.email = email
+        self.password = password
+        self.stock_list = []
+
+    def display_info(self):
+        print(f"{self.f_name} {self.l_name}")
+        print(f"Username: {self.username}")
+        print(f"Email: {self.email}")
+        print(f"{self.stock_list}")
+
+    def to_dict(self):
+        return {
+            'f_name': self.f_name,
+            'l_name': self.l_name,
+            'username': self.username,
+            'email': self.email,
+            'password': self.password
+        }

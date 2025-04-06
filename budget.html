@@ -121,6 +121,30 @@
       width: calc(50% - 1rem);
     }
 
+    .add-button {
+      display: inline-block;
+      margin-top: 0.5rem;
+      margin-bottom: 2rem;
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      color: white;
+      background-color: #007bff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .add-button:hover {
+      background-color: #0056b3;
+    }
+
+    .add-button-wrapper {
+      text-align: center;
+    }
+
+
 
   </style>
 </head>
@@ -134,6 +158,11 @@
       <div class="labeled-row"><span>Rental</span><span>$800</span></div>
       <div class="labeled-row"><span>Total</span><span>$5,100</span></div>
     </div>
+    <div class="add-button-wrapper">
+      <button class="add-button" onclick="alert('Add Income')">+ Add Income</button>
+      
+    </div>
+    
 
     <h2>Expenses</h2>
     <div class="card">
@@ -144,6 +173,11 @@
       <div class="labeled-row"><span>Transportation</span><span>$120</span></div>
       <div class="labeled-row"><span>Total</span><span>$2,345</span></div>
     </div>
+    <div class="add-button-wrapper">
+      
+      <button class="add-button" onclick="alert('Add Expense')">+ Add Expense</button>
+    </div>
+    
 
     <h2>Goals</h2>
       <div class="goals-wrapper">
@@ -188,6 +222,11 @@
           </div>
         </div>
       </div>
+      <div class="add-button-wrapper">
+        <button class="add-button" onclick="alert('Add Goal')">+ Add Goal</button>
+      </div>
+      
+      
 
 
   <!-- Bottom Navigation -->

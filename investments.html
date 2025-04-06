@@ -73,6 +73,29 @@
       font-weight: bold;
       cursor: pointer;
     }
+
+    .add-button {
+      display: inline-block;
+      margin-top: 0.5rem;
+      margin-bottom: 2rem;
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      color: white;
+      background-color: #007bff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .add-button:hover {
+      background-color: #0056b3;
+    }
+
+    .add-button-wrapper {
+      text-align: center;
+    }
   </style>
 </head>
 <body>
@@ -124,6 +147,11 @@
         <span style="flex: 0.8; text-align: right;">View Graph</span>
       </div>
       <div id="stockRows"></div>
+
+      <div class="add-button-wrapper">
+      
+        <button class="add-button" onclick="alert('Add Stock')">+ Add Stock</button>
+      </div>
       
     </div>
   </div>

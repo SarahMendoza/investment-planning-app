@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Investments</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    .top-right-icon {
+  float: right;
+  cursor: pointer;
+  color: #0099ff;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 100;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.6);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background-color: #1f1f1f;
+  color: #e0e0e0;
+  padding: 1.5rem;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 600px;
+  box-shadow: 0 0 10px rgba(0,153,255,0.2);
+}
+
+.close-btn {
+  float: right;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #0099ff;
+}
+
+.stock-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 1rem 0;
+  border-bottom: 1px solid #333;
+  padding-bottom: 0.5rem;
+  color: #cccccc;
+}
+
+.eyeball {
+  cursor: pointer;
+  color: #0099ff;
+  font-weight: bold;
+}
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #171717;
+  border-top: 1px solid #333;
+  display: flex;
+  justify-content: space-around;
+  padding: 0.75rem 0;
+  box-shadow: 0 -2px 5px rgba(0, 153, 255, 0.05);
+}
+
+.bottom-nav button {
+  background: none;
+  border: none;
+  color: #0099ff;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.bottom-nav button:hover {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+.add-button {
+  display: inline-block;
+  margin-top: 0.5rem;
+  margin-bottom: 2rem;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  color: #171717;
+  background-color: #0099ff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  text-align: center;
+}
+
+.add-button:hover {
+  background-color: #33adff;
+}
+
+.add-button-wrapper {
+  text-align: center;
+}
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Investments</h1>
+
+    <!-- Stock Portfolio -->
+    <div class="card">
+      <h3>
+        Stock Portfolio
+        <span class="top-right-icon" onclick="openStockModal()">⋮</span>
+      </h3>
+      <hr/>
+      <div class="labeled-row">
+        <span>Risk</span>
+        <strong id="portfolio-risk">Loading...</strong>
+      </div>
+      <hr/>
+  <div class="labeled-row">
+    <span>Return Rate</span>
+    <strong id="portfolio-return">Loading...</strong>
+  </div>
+    </div>
+
+    <!-- Fixed Assets -->
+    <div class="card">
+  <h3>Fixed Assets</h3><hr/>
+  <div id="fixedAssetsContainer"></div>
+</div>
+
+    <!-- Cash Investment -->
+    <!-- <div class="card">
+      <h3>Cash Investment</h3><hr/>
+      <div class="labeled-row"><span>Thing 1</span><strong>$15,000</strong></div><hr/>
+      <div class="labeled-row"><span>Thing 2</span><strong>$15,000</strong></div><hr/>
+      <div class="labeled-row"><span>Thing 3</span><strong>$15,500</strong></div>
+    </div>
+  </div> -->
+
+  <!-- Modal -->
+  <div class="modal" id="stockModal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeStockModal()">&times;</span>
+      <h2>Stock Portfolio</h2>
+      <div class="stock-row" style="font-weight: bold; border-bottom: 2px solid #aaa;">
+        <span style="flex: 2;">Stock</span>
+        <span style="flex: 0.8;">Risk</span>
+        <span style="flex: 0.8;">Return Rate</span>
+        <span style="flex: 0.8; text-align: right;">View Graph</span>
+      </div>
+      <div id="stockRows"></div>
+
+      <div class="add-button-wrapper">
+      
+        <button class="add-button" onclick="alert('Add Stock')">+ Add Stock</button>
+      </div>
+      
+    </div>
+  </div>
+
+  <!-- Bottom Navigation -->
+  <div class="bottom-nav">
+    <button onclick="window.location.href='index.html'">Logout</button>
+    <button onclick="window.location.href='dashboard.html'">Dashboard</button>
+    <button onclick="window.location.href='budget.html'">Budget</button>
+    <button onclick="window.location.href='investments.html'">Investments</button>
+    <button onclick="window.location.href='chat.html'">Chat</button>
+  </div>
+
+  <script>
+    // Load summary stats for the card
+    function loadPortfolioSummary() {
+      fetch('http://localhost:5000/api/portfolio-summary')
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById('portfolio-risk').textContent = data.risk;
+          document.getElementById('portfolio-return').textContent = data.returnRate;
+        })
+        .catch(err => {
+          console.error("Failed to fetch portfolio summary:", err);
+          document.getElementById('portfolio-risk').textContent = "Error";
+          document.getElementById('portfolio-return').textContent = "Error";
+        });
+    }
+  
+    // Load full stock table into modal
+    function openStockModal() {
+      document.getElementById('stockModal').style.display = 'flex';
+  
+      fetch('http://localhost:5000/api/stocks')
+        .then(res => res.json())
+        .then(data => {
+          const container = document.getElementById('stockRows');
+          container.innerHTML = "";
+  
+          data.forEach(stock => {
+            const row = document.createElement('div');
+            row.className = "stock-row";
+            row.innerHTML = `
+              <span style="flex: 2;">${stock.name}</span>
+              <span style="flex: 0.8;">${stock.risk}</span>
+              <span style="flex: 0.8;">${stock.rate}</span>
+              <span style="flex: 0.8; text-align: right;" class="eyeball" onclick="alert('Graph for ${stock.name}')">
+                <i class="fas fa-eye"></i>
+              </span>
+            `;
+            container.appendChild(row);
+          });
+        })
+        .catch(err => {
+          console.error("Failed to load stock details:", err);
+        });
+    }
+  
+    // Close modal
+    function closeStockModal() {
+      document.getElementById('stockModal').style.display = 'none';
+    }
+  
+    // Allow clicking outside modal to close
+    window.onclick = function(event) {
+      const modal = document.getElementById('stockModal');
+      if (event.target === modal) {
+        closeStockModal();
+      }
+    }
+  
+    // Call summary fetch when page loads
+    document.addEventListener("DOMContentLoaded", () => {
+      loadPortfolioSummary();
+    });
+  </script>
+</body>
+</html>

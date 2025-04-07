@@ -12,7 +12,7 @@ import os
 os.environ['MONGODB_PASS'] = 'pass'
 
 if "MONGODB_PASS" in os.environ:
-    uri = "mongodb+srv://sarahmendoza:HackSMU2024@cluster0.cmoki.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0".format(os.environ["MONGODB_PASS"])
+    uri = "mongodb+srv://mongo uri here".format(os.environ["MONGODB_PASS"])
 else:
     raise "MONGODB_PASS not in environment"
 
@@ -31,7 +31,7 @@ db = client["Investment-Planning-App"]
 
 import requests
 
-API_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDM4OTY0NDcsImlhdCI6MTc0Mzg5Mjg0Nywic3ViIjoidXNlcl9pZCJ9.CMmJZHb1qqTZxN5yYOiAG9IkYG9rs92Q4J40vNh2PA8'
+API_KEY = 'generate key for model'
 BASE_URL = 'http://localhost:5000/api/v1'
 
 headers = {

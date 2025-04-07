@@ -6,7 +6,7 @@ from user_db_module import create_portfolio
 
 import requests
 
-API_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDM4OTY0NDcsImlhdCI6MTc0Mzg5Mjg0Nywic3ViIjoidXNlcl9pZCJ9.CMmJZHb1qqTZxN5yYOiAG9IkYG9rs92Q4J40vNh2PA8'
+API_KEY = 'api key here'
 BASE_URL = 'http://localhost:5000/api/v1'
 
 headers = {
@@ -27,7 +27,7 @@ from flask import Flask, request, jsonify
 # Example API base URL and headers for stock analysis
 BASE_URL = 'https://your-stock-analysis-api.com'  # Replace with your actual API base URL
 headers = {
-    'Authorization': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDM5NDA0NjUsImlhdCI6MTc0MzkzNjg2NSwic3ViIjoidXNlcl9pZCJ9.1nPu1rWrV2UzatwRYSOXxfW3NONrpJIASc6GOjJXLEk'  # Replace with your actual API key
+    'Authorization': 'api key'  # Replace with your actual API key
 }
 
 # Function to extract stock ticker from user message
